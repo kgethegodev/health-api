@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'device_id',
     ];
 
     /**
@@ -44,5 +46,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function goals(): HasMany
+    {
+        return $this->hasMany(UserGoal::class);
+    }
+
+    public function dailySummaries(): HasMany
+    {
+        return $this->hasMany(DailyHealthSummary::class);
+    }
+
+    public function activeGoal()
+    {
+        return $this->goals()->latest()->first()?->goal ?? 'maintenance';
     }
 }
