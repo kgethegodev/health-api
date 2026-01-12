@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\DailyHealthSummaryController;
-use App\Http\Controllers\API\v1\UserGoalController;
+use App\Http\Controllers\API\V1\UserGoalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
