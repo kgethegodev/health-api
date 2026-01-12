@@ -26,6 +26,8 @@ class DailyHealthSummaryController extends Controller
             'sleep_hours' => ['nullable', 'numeric'],
         ]);
 
+        info(json_encode($request->all(), JSON_PRETTY_PRINT));
+
         $user = User::firstOrCreate([
             'device_id' => $request->input('device_id'),
         ]);
