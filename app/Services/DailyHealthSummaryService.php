@@ -66,20 +66,19 @@ class DailyHealthSummaryService
             ],
         ];
 
-        $activeGoal = $user->activeGoal() ?? 'maintenance';
+        $goalRecord = $user->goals()->latest()->first();
+        $activeGoal = $goalRecord?->goal ?? 'maintenance';
+        $startingWeight = $goalRecord?->weight;
+        $startingBodyFat = $goalRecord?->body_fat_percent;
 
         /* -------------------------
-           Weight trend
+           Weight trend (vs starting weight)
         ------------------------- */
 
-        $firstHalf = $days->take(3);
-        $secondHalf = $days->slice(-3);
+        $currentWeight = $days->whereNotNull('weight_kg')->last()?->weight_kg;
 
-        $firstAvgWeight = $firstHalf->avg('weight_kg');
-        $secondAvgWeight = $secondHalf->avg('weight_kg');
-
-        $weightChange = ($firstAvgWeight && $secondAvgWeight)
-            ? round($secondAvgWeight - $firstAvgWeight, 2)
+        $weightChange = ($startingWeight && $currentWeight)
+            ? round($currentWeight - $startingWeight, 2)
             : null;
 
         /* -------------------------
@@ -94,19 +93,14 @@ class DailyHealthSummaryService
             : 'good';
 
         /* -------------------------
-           Body fat trend
+           Body fat trend (vs starting body fat)
         ------------------------- */
 
-        $bodyFatEntries = $days->whereNotNull('body_fat_percent');
+        $currentBodyFat = $days->whereNotNull('body_fat_percent')->last()?->body_fat_percent;
 
-        if ($bodyFatEntries->count() >= 2) {
-            $firstBF = $bodyFatEntries->first()->body_fat_percent;
-            $lastBF = $bodyFatEntries->last()->body_fat_percent;
-
-            $bodyFatChange = round($lastBF - $firstBF, 2);
-        } else {
-            $bodyFatChange = null;
-        }
+        $bodyFatChange = ($startingBodyFat && $currentBodyFat)
+            ? round($currentBodyFat - $startingBodyFat, 2)
+            : null;
 
         /* -------------------------
            Sleep analysis
