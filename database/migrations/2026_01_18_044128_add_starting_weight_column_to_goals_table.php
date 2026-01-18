@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user_goals', function (Blueprint $table) {
-            $table->decimal('weight')->after('weight')->nullable();
+            $table->decimal('weight')->after('goal')->nullable();
         });
     }
 
