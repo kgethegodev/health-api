@@ -14,6 +14,7 @@ class UserGoalController extends Controller
         $request->validate([
             'goal' => ['required', 'string'],
             'weight' => ['required', 'numeric'],
+            'body_fat_percent' => ['required', 'numeric'],
             'starts_at' => ['nullable', 'date']
         ]);
         $user = User::query()->first();
@@ -21,6 +22,7 @@ class UserGoalController extends Controller
         return response()->json($user->goals()->create([
             'goal' => $request->goal,
             'weight' => $request->weight,
+            'body_fat_percent' => $request->body_fat_percent,
             'starts_at' => $request->starts_at ?? null
         ]));
     }
